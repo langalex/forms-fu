@@ -1,0 +1,40 @@
+forms-fu
+======================
+
+this plugin is intended to help in creating forms. its featureset will grow in the near future. for now it can do this:
+
+* adds a required_field?(field_name) method to all the activerecord models. this allows you to automatically mark required fields in a form with a *. required fields are determined automatically from the validates_* calls in the class.
+
+* there is a helper method available in the views that prints out the label for a field with our without star
+
+
+Example
+=======
+
+# user.rb
+
+class User < ActiveRecord::Base
+  validates_presence_of :name
+  validates_confirmation_of :password
+  validates_acceptance_of :terms
+  
+  required_fields << [:login] # in case you want to mark additional fields as required
+end
+
+User.required_field?(:name) # => true
+User.required_field?(:login) # => true
+User.required_field?(:password_confirmation) # => true
+User.required_field?(:terms) # => true
+User.required_field?(:email) # => false
+
+
+# users/new.html.erb
+
+<%= label_fu @user, :name %> # => <label for="user_name">Name *</label>
+<%= label_fu @user, :email %> # => <label for="user_email">Email</label>
+
+
+
+For questions, patches etc. contact alex[at]upstream-berlin.com
+
+Copyright (c) 2008 Alexander Lang, released under the MIT license
