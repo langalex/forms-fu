@@ -7,8 +7,10 @@ this plugin is intended to help in creating forms. its featureset will grow in t
 
 * there is a helper method available in the views that prints out the label for a field with our without star
 
+* a TabularForumBuilder class which can be used with the form_for rails helper. It automatically wraps all form fields in table rows and cells.
 
-Example
+
+Examples
 =======
 
 # user.rb
@@ -33,7 +35,34 @@ User.required_field?(:email) # => false
 <%= label_fu @user, :name %> # => <label for="user_name">Name *</label>
 <%= label_fu @user, :email %> # => <label for="user_email">Email</label>
 
+# or with the form builder
 
+<%- form_for :user, :builder => TabularFormBuilder do |f| -%>
+  <table>
+  <%= f.text_field :name %>
+  </table>
+<%- end -%>
+
+# prints out:
+
+<form ...>
+  <table>
+    <tr>
+      <th><label for="user_name">Name: *</label></th>
+      <td><input name="user[name]" type="text"/></td>
+    </tr>
+  </table>
+</form>
+
+# some added sugar:
+
+<%= f.text_fields :email, :name, :address %>
+
+# call text_field for each of the attributes
+
+<%= f.text_field_without_label :name %>
+
+# prints out the input tag without the tr, td and label - in case you need more customization
 
 For questions, patches etc. contact alex[at]upstream-berlin.com
 
