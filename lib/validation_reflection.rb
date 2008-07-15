@@ -12,10 +12,12 @@ module ValidationReflection
       
       public
       
-      class <<self
-        alias_method_chain :validates_presence_of, :reflection
-        alias_method_chain :validates_acceptance_of, :reflection
-        alias_method_chain :validates_inclusion_of, :reflection
+      unless self.respond_to? :validates_presence_of_without_reflection
+        class <<self
+          alias_method_chain :validates_presence_of, :reflection
+          alias_method_chain :validates_acceptance_of, :reflection
+          alias_method_chain :validates_inclusion_of, :reflection
+        end
       end
     end
   end

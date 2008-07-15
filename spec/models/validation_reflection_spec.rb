@@ -2,7 +2,7 @@ require File.join(File.dirname(__FILE__), '..', 'helper')
 require File.join(File.dirname(__FILE__), '..', '..', 'lib', 'validation_reflection')
 
 ActiveRecord::Base.connection.execute 'DROP TABLE test_users' rescue nil
-ActiveRecord::Base.connection.execute 'CREATE TABLE test_users (id int(4), first_name varchar(255), last_name varchar(255))'
+ActiveRecord::Base.connection.execute 'CREATE TABLE test_users (id int(4), first_name varchar(255), last_name varchar(255), type varchar(255))'
 
 class TestUser < ActiveRecord::Base
   validates_presence_of :name
@@ -12,6 +12,10 @@ class TestUser < ActiveRecord::Base
   validates_inclusion_of :status, :in => ['new', 'old']
   validates_inclusion_of :optional_status, :in => ['new', 'old', '']
   validates_inclusion_of :optional_status_2, :in => ['new', 'old'], :allow_nil => true
+end
+
+class TestPremiumUser < TestUser
+  validates_presence_of :name
 end
 
 describe TestUser, 'required_field' do
@@ -42,6 +46,10 @@ describe TestUser, 'required_field' do
   
   it "should not require a field with an :on option not set to :create" do
     TestUser.should_not be_required_field(:on_update_field)
+  end
+  
+  it "should work with single table inheritance" do
+    TestPremiumUser.should be_required_field(:name)
   end
 end
 
